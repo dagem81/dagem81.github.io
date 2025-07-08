@@ -1,11 +1,11 @@
 ---
-title: Attacking JWTs Using BurpSuite
+title: Attacking JWTs Using Burp Suite
 date: 2025-07-06
 categories: [Portswigger, DoD Cyber Sentinel]
 tags: [jwt,web]     # TAG names should always be lowercase
 ---
 
-My first encounter with JWTs was during the DoD Cyber Sentinel CTF. Despite being able to complete the challenge by referencing other writeups and stack overflow, there was still a lot of knowledge gap. The following weeks after the CTF, I did more research on JWTs and came across the Portswigger labs. Now that I have completed all the JWT labs on Portswigger, I have a much better understanding of them and I will share a detailed walkthrough exploiting the various JWT vulnerabilities using BurpSuite and explaining the concepts behind them.
+My first encounter with JWTs was during the DoD Cyber Sentinel CTF. Despite being able to complete the challenge by referencing other writeups and stack overflow, there was still a lot of knowledge gap. The following weeks after the CTF, I did more research on JWTs and came across the Portswigger labs. Now that I have completed all the JWT labs on Portswigger, I have a much better understanding of them and I will share a detailed walkthrough exploiting the various JWT vulnerabilities using Burp Suite and explaining the concepts behind them.
 
 ## Overview
 JSON Web Tokens (JWTs) are a standard method for securely transmitting JSON data between a server and a client. They consist of three components: the header, payload, and signature, each separated by a period (`.`). The header and payload are Base64URL-encoded JSON objects and can be easily decoded. They are typically used for authentication, session management, and access control mechanisms.
@@ -45,9 +45,9 @@ _From DoD Cyber Sentinel CTF_
 
 JWTs are stateless, meaning the web server does not retain any information about the content it has sent to the client and treats each interaction independently. The security of JWTs relies on the signing key remaining secret, and the server accepts or denies the client's requests by verifying the token’s signature. This statelessness is highly advantageous for scalability as the server does not need to store session information for every active user. Instead, it can quickly verify the validity of client requests using the token’s signature.
 
-However, the flexibility that JWTs offer developers and the stateless nature can also introduce vulnerabilities. Improper implementations and misconfigurations surrounding the issuing and verification of the tokens can easily be exploited, allowing attackers to tamper with the tokens. The following sections will demonstrate how this is done using BurpSuite on the Portswigger labs.
+However, the flexibility that JWTs offer developers and the stateless nature can also introduce vulnerabilities. Improper implementations and misconfigurations surrounding the issuing and verification of the tokens can easily be exploited, allowing attackers to tamper with the tokens. The following sections will demonstrate how this is done using Burp Suite on the Portswigger labs.
 
-## Setting Up BurpSuite
+## Setting Up Burp Suite
 
 First thing you want to do is install the JWT Editor Extension from the BAppStore. This extension has features like highlighting requests that have JWTs and many more which will be showcased throughout.
 ![img-description](/assets/JWT_Editor.png)
@@ -79,7 +79,7 @@ This vulnerability is caused when the client can tell the server what algorithm 
 
 ![img-description](/assets/alg_none.png)
 
-This was also the vulnerability showcased in the DoD Cyber Sentinel CTF. Switching the role of the user to admin, changing the `"alg":` to none, removing the signature from the token, and attaching the tampered token with the `Authorization: Bearer <token>` schema allowed access to the secret directory with the flag in it. I was using JWT.io during the challenge to tamper the token since I didn't know about the BurpSuite extension.
+This was also the vulnerability showcased in the DoD Cyber Sentinel CTF. Switching the role of the user to admin, changing the `"alg":` to none, removing the signature from the token, and attaching the tampered token with the `Authorization: Bearer <token>` schema allowed access to the secret directory with the flag in it. I was using JWT.io during the challenge to tamper the token since I didn't know about the Burp Suite extension.
 
 ![img-description](/assets/cyber_sent_tampered.png)
 _Tampered token with signature removed_
@@ -112,7 +112,7 @@ Hash.Target......: eyJraWQiOiJkNDcxYmY0Ni1iNzhmLTQ1NGMtYmU0ZS05OGRmYzM...NHJr9k
 ```
 Since we know the secret, we can recreate the signing key and tamper the token as we please and resign it so that its valid token.
 
-To do this on BurpSuite:
+To do this on Burp Suite:
 1. Go to the JWT Editor tab and generate a new symmetric key
 2. Change the `"k":` parameter to the Base64Url-encoding of the secret (`c2VjcmV0MQ==` for secret1 in this case).
 ![img-description](/assets/symetric_key.png)
@@ -123,7 +123,7 @@ To do this on BurpSuite:
 
 JSON Web Key (JWK) is an optional parameter for the header when using asymmetric encryption to sign the token. This parameter allows the server to send its public key within the token. The vulnerability arises when the server doesn't check the source of the public key. An attacker could provide their own public key and sign the token with their private key. So, now the attacker is able to change the contents of the token and sign it with their private key, and the server uses the public key in the JWK parameter to verify it's legitimacy.
 
-So to do this in BurpSuite:
+So to do this in Burp Suite:
 1. Generate your own asymmetric key in JWK format.
 ![img-description](/assets/rsa.png)
 
