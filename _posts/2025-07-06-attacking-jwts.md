@@ -166,7 +166,7 @@ To exploit this vulnerability:
 ![img-description](/assets/endpoint.png)
 2. Create an RSA key using the server's public key.
 ![img-description](/assets/conf_rsa.png)
-3. A little bit of guessing involved at this step. We're going to guess that the server is storing as a PEM file. So, we will copy the RSA token as a PEM file and Base64 encode it.
+3. A little bit of guessing involved at this step. We're going to guess that the server is storing it as a PEM file. So, we will copy the RSA token as a PEM file and Base64 encode it.
 ![img-description](/assets/pem_encode.png)
 4. Use the encoded PEM file as the secret for the symmetric algorithm key we create.
 ![img-description](/assets/conf_sym.png)
@@ -204,8 +204,8 @@ Found n with multiplier 5:
    Base64 encoded pkcs1 key: LS0tLS1CRUdJTiBSU0EgUFVCTElDIEtFWS0tLS0tCk1JSUJDZ0tDQVFFQXQwOFhqWGV5Wmt1c3NMczlvQ1l5NWFiK0pzbEh4cm5saklyelJKUWVOMVJwYjl1Rm1YZkEKcklTSFJYUFRmWjlvblJsUTN6UUI2OUM5Q2lCUXdVbDJvTGZYR0c0RmNDV281Uk1HK21Zc0IvV0paVVFQaDBxegoxZTlaK2p4elE3YUg4YTFHVXZ5UEJ2TmNSa2c0ZmdwdkUvY2FLbEo0TGduclcvZmkvRU9hUlR4VCtCbEFtZ3ROCkp3WUFlUTlBWGxBMzU3V1hTMDBlYzlDd1hVQy9uS3VIS3VzamlzUk42dUlZU2cyTGZxQy9LMVpobWlKNERkdy8KamRoOTloY0NWTHhyMXZIdVVlWkJUeTBIVm1yZUVpZFFEbnVwWGJuUnV6dmt3T2JtNnFsRkZVS21abDVzYnhwZAptVmdPQ2pGWEE0VlBEWGdNOXFpR3grTkE3MDZRWnJ0bTJRSURBUUFCCi0tLS0tRU5EIFJTQSBQVUJMSUMgS0VZLS0tLS0K
    Tampered JWT: eyJraWQiOiJiNmIzYzk4Mi05OTYzLTQ5ZjMtOGI0ZS0wOWZlNjY5YzVmMDkiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiAicG9ydHN3aWdnZXIiLCAiZXhwIjogMTc1MTc1NDc1NSwgInN1YiI6ICJ3aWVuZXIifQ.260HYx49MSu--mfw8zP0EGLBhhJ7n92S5JbNwMr2-Pc
 ```
-4. Next you want to grab the tampered tokens and see which one lets you authenticate as the user account.
-5. After this it's the same concept as the previous attack. Once verifying the token that works, copy the associated Base64 encoded key and use it to sign the new token.
+4. Next you want to grab the tampered tokens and see which one lets you authenticate with the user account.
+5. After this, it's the same concept as the previous attack. Once verifying the token that works, copy the associated Base64 encoded key and use it as the secret for your symetric algorithim key.
 6. Sign the token with the symmetric key and change the algorithm header.
 ![img-description](/assets/not_exposed.png)
 
